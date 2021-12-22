@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  nestJs:
+        container_name: weatherapp
+        image: nodeapp
+        env_file: .env
+        build:
+          context: .
+          dockerfile: Dockerfile
+        ports:
+          - "3000:3000"
+        networks:
+          - nodeapp-network
+        depends_on:
+          - mongodb
+#          - mongo_seed
+        environment:
+          DB_PORT: ${DB_PORT}
+          DB_NAME: ${DB_NAME}
+          DB_HOST: ${DB_HOST}
+          PORT: ${PORT}
+#    mongo_seed:
+#      container_name: mongo_seed
+#      depends_on:
+#        - mongodb
+#      networks:
+#        - nodeapp-network
+#      build:
+#        context: ./mongoseed
+#        dockerfile: Dockerfile.seed
+  mongodb:
+      container_name: mongodb
+      image: mongo
+      networks:
+        - nodeapp-network
+      environment:
+            # provide your credentials here
+          - MONGO_INITDB_ROOT_USERNAME=dockerMongo
+          - MONGO_INITDB_ROOT_PASSWORD=rootPassXXX
+
+networks:
+  nodeapp-network:
+    driver: bridge
+
